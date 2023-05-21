@@ -1,23 +1,31 @@
-import logo from './logo.svg';
+
 import './App.css';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { getAllData } from './features/gitUserSlice';
+
 function App() {
+
+  const dispatch = useDispatch();
+  const data = useSelector((state) => {
+    console.log("state...", state.app)
+    return state.app;
+  });
+
+  if (data.loading) {
+    return <h2>Loading....</h2>
+  }
+  if (data.error != null) {
+    return <h3>{data.error}</h3>
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Github users</h1>
+      <button onClick={() => dispatch(getAllData())}> Get Github Users</button>
+      {data.users.map((ele) => (
+        <li key={ele.id}>{ele.login}</li>
+      ))}
     </div>
   );
 }
